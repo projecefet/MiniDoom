@@ -1,14 +1,20 @@
 #pragma once
 
+#include "map.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "map.hpp"
+using std::cout;
+using std::endl;
 
 class Player {
  private:
   sf::Vector2f pos;
   sf::RectangleShape rect;
+
+  int jumpCooldown = 200;
+  int jump_HoldTime = 0;
+  const int max_Jump_HoldTime = 30;
 
   sf::Clock playerClock;
 
