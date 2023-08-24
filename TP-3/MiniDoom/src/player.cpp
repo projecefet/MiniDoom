@@ -5,7 +5,7 @@ Player::Player() {
 	this->pos = sf::Vector2f(1 * 16, 1 * 16);
 
 	this->rect.setSize(sf::Vector2f(16, 16));
-	this->rect.setFillColor(sf::Color::Red);
+	this->rect.setFillColor(sf::Color::Green);
 	this->rect.setPosition(this->pos);
 }
 
@@ -15,8 +15,7 @@ Player::~Player() {
 void Player::update(Map *map) {
 
 	// Colisão da cabeça pra pulo
-	if (map->doesCollide(
-			sf::Vector2i(this->pos.x / 16, this->pos.y / 16 ))) {
+	if (map->doesCollide(sf::Vector2i(this->pos.x / 16, this->pos.y / 16))) {
 	}
 
 	// Left - Right collision
@@ -36,41 +35,47 @@ void Player::update(Map *map) {
 				* this->playerClock.getElapsedTime().asSeconds();
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)
-			&& jump_HoldTime <= max_Jump_HoldTime && jumpCooldown >= 200
-			&& map->doesCollide(
-					sf::Vector2i(this->pos.x / 16, this->pos.y / 16 - 1))) {
-		this->pos.y = pos.y - 2;
-
-		if (jump_HoldTime == max_Jump_HoldTime) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && (jumpCooldown >= 200 || jumped == true)) {
+		if(jumpCooldown >= 200){
 			jumpCooldown = 0;
 		}
-		jump_HoldTime++;
+		if (jump_HoldTime <= max_Jump_HoldTime
+				&& map->doesCollide(
+						sf::Vector2i(this->pos.x / 16, this->pos.y / 16 - 1))) {
 
-	} else {
+			this->pos.y = pos.y - 2;
+
+			if (jump_HoldTime <= max_Jump_HoldTime) {
+				jumped = true;
+			}
+			jump_HoldTime++;
+		}
+	}
+	else {
 		jump_HoldTime = 0;
 		jumpCooldown++;
+		jumped = false;
 	}
 
-	// Ground collision
+// Ground collision
 	if (map->doesCollide(
 			sf::Vector2i(this->pos.x / 16, this->pos.y / 16 + 1))) {
 		this->pos.y += velocity
 				* this->playerClock.getElapsedTime().asSeconds();
 	}
 
-	// Procurando armadilhas
+// Procurando armadilhas
 	if (!map->dealsDamage(sf::Vector2i(this->pos.x / 16, this->pos.y / 16))) {
 		this->die();
 	}
 
-	// Mudando a posição
+// Mudando a posição
 	this->rect.setPosition(this->pos);
 	this->playerClock.restart();
 }
 
 void Player::render(sf::RenderWindow *i_window) {
-	// A view ta de tamanho diferente da janela pro jogo ficar em um zoom, se quiser só mudar
+// A view ta de tamanho diferente da janela pro jogo ficar em um zoom, se quiser só mudar
 	i_window->draw(this->rect);
 	i_window->setView(
 			sf::View(sf::Vector2f(this->pos.x + 50, this->pos.y - 25),
