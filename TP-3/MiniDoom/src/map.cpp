@@ -1,113 +1,53 @@
+#include <SFML/Graphics.hpp>
+
+#include "headers/background.hpp"
 #include "headers/map.hpp"
+#include "headers/player.hpp"
+#include "headers/bullet.hpp"
 
-using namespace sf;
+int main() {
+	sf::RenderWindow *window;
+	sf::VideoMode videoMode(800, 600);
+	window = new sf::RenderWindow(videoMode, "Joguinho legal",
+			sf::Style::Close | sf::Style::Titlebar);
 
-// Constructors / Destructors
+	Player jogador;
+	Map mapa("maps/mapa.png", "info.xml");
+	Background back("resources/background.jpg", sf::Vector2f(1600, 1200),
+			sf::Vector2f(-400.f, -200.f));
+	std::vector<Bullet*> bullets;
 
-#include <iostream>
+	while (window->isOpen()) {
+		sf::Event ev;
+		while (window->pollEvent(ev)) {
+			if (ev.type == sf::Event::Closed
+					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
+				window->close();
+			}
+		}
 
-Map::Map(string mapName, string xmlPath) {
-  /*
-  - Loads map images
-  - Get every pixel and maps it on mapColorFunction
-  - Push the maped value to class map vector
-  */
+		window->clear();
 
-  tinyxml2::XMLDocument doc;
-  doc.LoadFile(xmlPath.c_str());
+		back.render(window, jogador.getPosition());
 
-  tinyxml2::XMLElement *rootNode = doc.RootElement();
-  tinyxml2::XMLElement *block = rootNode->FirstChildElement("block");
+		jogador.update(&mapa);
+		jogador.shoot(bullets);
+		jogador.render(window);
 
-  // Colocando as informações do xml no array de colisão e na matriz de tiles
-  while (block) {
-    Block currentBlock;
+		for (int i = 0; i < bullets.size(); i++) {
 
-    // Informações do block
-    currentBlock.color = block->FirstChildElement("color")->GetText();
-    tinyxml2::XMLElement *position = block->FirstChildElement("position");
+			window->draw(bullets.at(i)->shape);
+			bullets.at(i)->update();
 
-    int x = std::atoi(position->FirstChildElement("x")->GetText());
-    int y = std::atoi(position->FirstChildElement("y")->GetText());
+			if (bullets.at(i)->timer >= 1000) {
+				bullets.erase(bullets.begin() + i);
+			}
+		}
 
-    currentBlock.position = sf::Vector2i(x, y);
+		mapa.render(window);
 
-    currentBlock.collision = strcmp(block->FirstChildElement("collision")->GetText(), "true");
-    currentBlock.damage = strcmp(block->FirstChildElement("damage")->GetText(), "true");
+		window->display();
+	}
 
-    this->mapColorFunction.push_back(currentBlock);
-
-    block = block->NextSiblingElement("block");
-
-    // Colisão
-  }
-
-  // Lendo como o mapa é
-  Image map;
-  map.loadFromFile(mapName);
-
-  Vector2u mapSize = map.getSize();
-
-  for (unsigned int y = 0; y < mapSize.y; y++) {
-    vector<Block> yAxis;
-    for (unsigned int x = 0; x < mapSize.x; x++) {
-      Color color = map.getPixel(x, y);
-
-      for (unsigned int i = 0; i < this->mapColorFunction.size(); i++) {
-        if (this->mapColorFunction[i].color == std::to_string(color.r) + "," +
-                                                   std::to_string(color.g) + "," +
-                                                   std::to_string(color.b)) {
-          yAxis.push_back(this->mapColorFunction[i]);
-        }
-      }
-    }
-
-    this->mapTiles.push_back(yAxis);
-  }
-}
-
-Map::~Map() {}
-
-// Functions
-
-void Map::render(RenderWindow *i_window) {
-  /*
-    @return void
-
-    Draws map vector on screen
-  */
-
-  const int OFFSET = 16;
-
-  Texture gameTexture;
-  gameTexture.loadFromFile("resources/terrain-tilemap.png");
-
-  RectangleShape square;
-  square.setSize(Vector2f(OFFSET, OFFSET));
-
-  square.setTexture(&gameTexture);
-
-  for (unsigned int y = 0; y < this->mapTiles.size(); y++) {
-    for (unsigned int x = 0; x < this->mapTiles[y].size(); x++) {
-      square.setTextureRect(IntRect(OFFSET * mapTiles[y][x].position.x,
-                                    OFFSET * mapTiles[y][x].position.y, OFFSET, OFFSET));
-      square.setPosition(Vector2f(OFFSET * x, OFFSET * y));
-
-      i_window->draw(square);
-    }
-  }
-}
-
-bool Map::doesCollide(sf::Vector2i pos) {
-  if (mapTiles[pos.y][pos.x].collision) {
-    return true;
-  }
-  return false;
-}
-
-bool Map::dealsDamage(sf::Vector2i pos) {
-  if (mapTiles[pos.y][pos.x].damage) {
-    return true;
-  }
-  return false;
+	return 0;
 }
