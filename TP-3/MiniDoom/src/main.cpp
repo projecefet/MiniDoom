@@ -4,6 +4,7 @@
 #include "headers/map.hpp"
 #include "headers/player.hpp"
 #include "headers/bullet.hpp"
+#include "headers/enemy.hpp"
 
 int main() {
 	sf::RenderWindow *window;
@@ -12,6 +13,7 @@ int main() {
 			sf::Style::Close | sf::Style::Titlebar);
 
 	Player jogador;
+	Enemy * inimigo = new Enemy;
 	Map mapa("maps/mapa.png", "info.xml");
 	Background back("resources/background.jpg", sf::Vector2f(1600, 1200),
 			sf::Vector2f(-400.f, -200.f));
@@ -30,10 +32,10 @@ int main() {
 
 		back.render(window, jogador.getPosition());
 
-		mapa.render(window);
-
 		jogador.update(&mapa);
+		inimigo->update(&mapa, &jogador);
 		jogador.shoot(bullets);
+		inimigo->render(window);
 		jogador.render(window);
 
 		for (int i = 0; i < bullets.size(); i++) {
@@ -46,6 +48,7 @@ int main() {
 			}
 		}
 
+		mapa.render(window);
 
 		window->display();
 	}
