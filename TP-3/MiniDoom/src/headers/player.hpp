@@ -2,11 +2,12 @@
 
 #include "map.hpp"
 #include "bullet.hpp"
+#include "movable.hpp"
 
-class Player {
+class Player: public Movable {
  private:
-  sf::Vector2f pos;
-  sf::RectangleShape rect;
+  sf::Vector2f position;
+  sf::RectangleShape shape;
 
   int jumpCooldown = 200;
   int jump_HoldTime = 0;
