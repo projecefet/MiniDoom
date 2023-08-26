@@ -24,8 +24,7 @@ void Player::update(Map *map) {
 					sf::Vector2i(this->pos.x / 16 + 1, this->pos.y / 16))) {
 		this->pos.x += velocity
 				* this->playerClock.getElapsedTime().asSeconds();
-		std::cout << this->playerClock.getElapsedTime().asSeconds()
-				<< std::endl;
+		direction = right;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)
@@ -33,10 +32,12 @@ void Player::update(Map *map) {
 					sf::Vector2i(this->pos.x / 16 - 1, this->pos.y / 16))) {
 		this->pos.x -= velocity
 				* this->playerClock.getElapsedTime().asSeconds();
+		direction = left;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && (jumpCooldown >= 200 || jumped == true)) {
-		if(jumpCooldown >= 200){
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)
+			&& (jumpCooldown >= 200 || jumped == true)) {
+		if (jumpCooldown >= 200) {
 			jumpCooldown = 0;
 		}
 		if (jump_HoldTime <= max_Jump_HoldTime
@@ -50,8 +51,7 @@ void Player::update(Map *map) {
 			}
 			jump_HoldTime++;
 		}
-	}
-	else {
+	} else {
 		jump_HoldTime = 0;
 		jumpCooldown++;
 		jumped = false;
@@ -72,6 +72,20 @@ void Player::update(Map *map) {
 // Mudando a posição
 	this->rect.setPosition(this->pos);
 	this->playerClock.restart();
+
+// diminuindo o tempo de recarga do tiro
+	if (shootCooldown < 100) {
+		shootCooldown++;
+	}
+
+}
+
+void Player::shoot(std::vector<Bullet*> &bullets) {
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && shootCooldown >= 100) {
+		Bullet *newBullet = new Bullet(pos, direction);
+		bullets.push_back(newBullet);
+		shootCooldown = 0;
+	}
 }
 
 void Player::render(sf::RenderWindow *i_window) {
