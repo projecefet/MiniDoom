@@ -2,7 +2,8 @@
 #define SRC_HEADERS_BULLET_HPP_
 
 #include "map.hpp"
-class Bullet {
+#include "movable.hpp"
+class Bullet: public Movable{
 private:
 	sf::Vector2f position;
 	sf::FloatRect hitbox;
