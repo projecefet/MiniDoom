@@ -1,53 +1,41 @@
+#pragma once
+
+#include <iostream>
+using std::cout;
+using std::endl;
+#include <vector>
+using std::vector;
+
+#include <string>
+using std::string;
+
 #include <SFML/Graphics.hpp>
+#include <cstring>
 
-#include "headers/background.hpp"
-#include "headers/map.hpp"
-#include "headers/player.hpp"
-#include "headers/bullet.hpp"
+#include "../tinyxml2.h"
 
-int main() {
-	sf::RenderWindow *window;
-	sf::VideoMode videoMode(800, 600);
-	window = new sf::RenderWindow(videoMode, "Joguinho legal",
-			sf::Style::Close | sf::Style::Titlebar);
+struct Block {
+  string color;
+  sf::Vector2i position;
+  bool collision;
+  bool damage;
+};
 
-	Player jogador;
-	Map mapa("maps/mapa.png", "info.xml");
-	Background back("resources/background.jpg", sf::Vector2f(1600, 1200),
-			sf::Vector2f(-400.f, -200.f));
-	std::vector<Bullet*> bullets;
+class Map {
+ private:
+  vector<vector<Block>> mapTiles;
 
-	while (window->isOpen()) {
-		sf::Event ev;
-		while (window->pollEvent(ev)) {
-			if (ev.type == sf::Event::Closed
-					|| sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape)) {
-				window->close();
-			}
-		}
+ public:
+  vector<Block> mapColorFunction;
 
-		window->clear();
+  // Constructor / Destructor
+  Map(string mapName, string xmlPath);
+  ~Map();
 
-		back.render(window, jogador.getPosition());
+  // Functions
+  void render(sf::RenderWindow *i_window);
 
-		jogador.update(&mapa);
-		jogador.shoot(bullets);
-		jogador.render(window);
-
-		for (int i = 0; i < bullets.size(); i++) {
-
-			window->draw(bullets.at(i)->shape);
-			bullets.at(i)->update();
-
-			if (bullets.at(i)->timer >= 1000) {
-				bullets.erase(bullets.begin() + i);
-			}
-		}
-
-		mapa.render(window);
-
-		window->display();
-	}
-
-	return 0;
-}
+  // Collision functions
+  bool doesCollide(sf::Vector2i pos);
+  bool dealsDamage(sf::Vector2i pos);
+};
