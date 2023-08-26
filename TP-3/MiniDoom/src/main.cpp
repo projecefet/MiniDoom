@@ -30,6 +30,8 @@ int main() {
 
 		back.render(window, jogador.getPosition());
 
+		mapa.render(window);
+
 		jogador.update(&mapa);
 		jogador.shoot(bullets);
 		jogador.render(window);
@@ -44,7 +46,6 @@ int main() {
 			}
 		}
 
-		mapa.render(window);
 
 		window->display();
 	}
