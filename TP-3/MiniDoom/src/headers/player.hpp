@@ -6,8 +6,6 @@
 
 class Player: public Movable {
  private:
-  sf::Vector2f position;
-  sf::RectangleShape shape;
 
   int jumpCooldown = 200;
   int jump_HoldTime = 0;
@@ -27,13 +25,14 @@ class Player: public Movable {
   	};
   int direction = right;
   int shootCooldown = 0;
+  sf::Vector2f position;
 
   Player();
   ~Player();
 
 
   void update(Map *map);
-  void shoot(std::vector<Bullet*> &bullets);
+  void shoot(std::vector<Bullet*> &bullets, int &id);
   void render(sf::RenderWindow *i_window);
   void die();
 
