@@ -13,7 +13,8 @@ int main() {
 			sf::Style::Close | sf::Style::Titlebar);
 
 	Player jogador;
-	Enemy * inimigo = new Enemy;
+	Enemy *inimigo = new Enemy;
+	int bulletId = 0;
 	Map mapa("maps/mapa.png", "info.xml");
 	Background back("resources/background.jpg", sf::Vector2f(1600, 1200),
 			sf::Vector2f(-400.f, -200.f));
@@ -33,9 +34,7 @@ int main() {
 		back.render(window, jogador.getPosition());
 
 		jogador.update(&mapa);
-		inimigo->update(&mapa, &jogador);
-		jogador.shoot(bullets);
-		inimigo->render(window);
+		jogador.shoot(bullets, bulletId);
 		jogador.render(window);
 
 		for (int i = 0; i < bullets.size(); i++) {
@@ -43,11 +42,19 @@ int main() {
 			window->draw(bullets.at(i)->shape);
 			bullets.at(i)->update();
 
+			if (inimigo->gotShot(bullets.at(i))) {
+				cout << "tomou tiro" << endl;
+			}
 			if (bullets.at(i)->timer >= 1000) {
 				bullets.erase(bullets.begin() + i);
 			}
 		}
 
+		if (inimigo->checkDeath() == false) {
+			inimigo->update(&mapa, &jogador);
+			inimigo->render(window);
+
+		}
 		mapa.render(window);
 
 		window->display();
