@@ -1,21 +1,24 @@
-#pragma once
+#ifndef SRC_HEADERS_ENEMY_HPP_
+#define SRC_HEADERS_ENEMY_HPP_
 
 #include "map.hpp"
 #include "movable.hpp"
 #include "player.hpp"
+#include "bullet.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
 
 using std::cout;
 using std::endl;
-using namespace sf;
 
 class Enemy: public Movable {
 private:
     //sf::Sprite enemysprite;
     //sf::Texture enemytexture;
-    RectangleShape shape;
+
+	std::vector<int> idBulletsHit;
+
 public:
 	/*void draw(sf::RenderWindow * window) {
         window->draw(enemysprite);
@@ -25,7 +28,7 @@ public:
 	   enemysprite.setScale(scaleX, scaleY);
    }
 	*/
-    Vector2f position;
+
     bool distanceAllowed = false;
     float followspeed = 0.1f;
     int life = 100;
@@ -34,8 +37,11 @@ public:
     ~Enemy();
 
 	void update(Map *map, Player * jogador);
+	bool gotShot(Bullet *&bullet);
     void render(sf::RenderWindow *i_window);
-    void die();
+    bool checkDeath();
 
-    Vector2f newPosition;
+    sf::Vector2f newPosition;
 };
+
+#endif
