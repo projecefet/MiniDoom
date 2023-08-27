@@ -5,8 +5,7 @@
 #include "movable.hpp"
 class Bullet: public Movable{
 private:
-	sf::Vector2f position;
-	sf::FloatRect hitbox;
+
 	enum direction{
 	  		left,
 	  		right
@@ -14,16 +13,20 @@ private:
 	int direction;
 
 public:
-
-	sf::RectangleShape shape;
+	int id;
 	int timer = 0;
 
-	Bullet(sf::Vector2f startPosition, const int direction) {
+
+	Bullet(sf::Vector2f startPosition, const int direction, int &id) {
 		position = startPosition;
 		shape.setSize(sf::Vector2f(10, 2));
-		shape.setFillColor(sf::Color::Blue);
+		shape.setFillColor(sf::Color::Red);
 		shape.setPosition(position);
+		this->id = id;
+		id++;
 
+
+		cout <<"id: " << id << endl;
 		hitbox = shape.getGlobalBounds();
 		this->direction = direction;
 	}
@@ -33,15 +36,16 @@ public:
 
 	void update() {
 		if(direction == right){
-			position.x = position.x + 0.8;
+			position.x = position.x + 1.3;
 		}
 		else if(direction == left){
-			position.x = position.x - 0.8;
+			position.x = position.x - 1.3;
 		}
 		shape.setPosition(position);
 
 		timer++;
 
+		hitbox = shape.getGlobalBounds();
 	}
 	/*
 	void draw(sf::RenderWindow *window, std::vector<Bullet> bullets){
@@ -52,4 +56,5 @@ public:
 	}
 	*/
 };
+
 #endif
