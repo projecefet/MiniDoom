@@ -14,26 +14,13 @@ using std::endl;
 
 class Enemy: public Movable {
 private:
-    //sf::Sprite enemysprite;
-    //sf::Texture enemytexture;
-
 	std::vector<int> idBulletsHit;
-
 public:
-	/*void draw(sf::RenderWindow * window) {
-        window->draw(enemysprite);
-    }
-
-    void setScale(float scaleX, float scaleY) {
-	   enemysprite.setScale(scaleX, scaleY);
-   }
-	*/
-
     bool distanceAllowed = false;
     float followspeed = 0.1f;
-    int life = 100;
+    int enemyId;
 
-    Enemy();
+    Enemy(int enemyId);
     ~Enemy();
 
 	void update(Map *map, Player * jogador);
