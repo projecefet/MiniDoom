@@ -47,14 +47,6 @@ public:
 
 		hitbox = shape.getGlobalBounds();
 	}
-	/*
-	void draw(sf::RenderWindow *window, std::vector<Bullet> bullets){
-		for(int i = 0; i < bullets.size(); i++){
-			window->draw(bullets.at(i).shape);
-		}
-
-	}
-	*/
 };
 
 #endif
