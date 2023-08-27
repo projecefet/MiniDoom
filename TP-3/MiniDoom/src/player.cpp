@@ -42,7 +42,7 @@ void Player::update(Map *map) {
 		}
 		if (jump_HoldTime <= max_Jump_HoldTime
 				&& map->doesCollide(
-						sf::Vector2i(this->position.x / 16, this->position.y / 16 - 1))) {
+						sf::Vector2i(this->position.x / 16, this->position.y / 16))) {
 
 			this->position.y = position.y - 2;
 
@@ -80,9 +80,9 @@ void Player::update(Map *map) {
 
 }
 
-void Player::shoot(std::vector<Bullet*> &bullets) {
+void Player::shoot(std::vector<Bullet*> &bullets, int &id) {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && shootCooldown >= 100) {
-		Bullet *newBullet = new Bullet(position, direction);
+		Bullet *newBullet = new Bullet(position, direction, id);
 		bullets.push_back(newBullet);
 		shootCooldown = 0;
 	}
