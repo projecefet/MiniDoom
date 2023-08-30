@@ -25,8 +25,6 @@ public:
 		this->id = id;
 		id++;
 
-
-		cout <<"id: " << id << endl;
 		hitbox = shape.getGlobalBounds();
 		this->direction = direction;
 	}
@@ -46,6 +44,7 @@ public:
 		timer++;
 
 		hitbox = shape.getGlobalBounds();
+
 	}
 };
 
