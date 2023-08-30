@@ -11,29 +11,14 @@ Player::Player() {
 
 Player::~Player() {
 }
-
-void Player::update(Map *map) {
-
-	// Colisão da cabeça pra pulo
-	if (map->doesCollide(sf::Vector2i(this->position.x / 16, this->position.y / 16))) {
-	}
-
-	// Left - Right collision
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)
-			&& map->doesCollide(
-					sf::Vector2i(this->position.x / 16 + 1, this->position.y / 16))) {
-		this->position.x += velocity
+void Player::groundColision(Map *map) {
+	if (map->doesCollide(
+			sf::Vector2i(this->position.x / 16, this->position.y / 16 + 1))) {
+		this->position.y += velocity
 				* this->playerClock.getElapsedTime().asSeconds();
-		direction = right;
 	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)
-			&& map->doesCollide(
-					sf::Vector2i(this->position.x / 16 - 1, this->position.y / 16))) {
-		this->position.x -= velocity
-				* this->playerClock.getElapsedTime().asSeconds();
-		direction = left;
-	}
+}
+void Player::jump(Map *map) {
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)
 			&& (jumpCooldown >= 200 || jumped == true)) {
@@ -42,7 +27,8 @@ void Player::update(Map *map) {
 		}
 		if (jump_HoldTime <= max_Jump_HoldTime
 				&& map->doesCollide(
-						sf::Vector2i(this->position.x / 16, this->position.y / 16))) {
+						sf::Vector2i(this->position.x / 16,
+								this->position.y / 16))) {
 
 			this->position.y = position.y - 2;
 
@@ -56,32 +42,60 @@ void Player::update(Map *map) {
 		jumpCooldown++;
 		jumped = false;
 	}
+}
 
-// Ground collision
-	if (map->doesCollide(
-			sf::Vector2i(this->position.x / 16, this->position.y / 16 + 1))) {
-		this->position.y += velocity
+void Player::walkLeft(Map *map) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)
+			&& map->doesCollide(
+					sf::Vector2i(this->position.x / 16 - 1,
+							this->position.y / 16))) {
+		this->position.x -= velocity
 				* this->playerClock.getElapsedTime().asSeconds();
+		direction = left;
 	}
+}
 
-// Procurando armadilhas
-	if (!map->dealsDamage(sf::Vector2i(this->position.x / 16, this->position.y / 16))) {
+void Player::walkRight(Map *map) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)
+			&& map->doesCollide(
+					sf::Vector2i(this->position.x / 16 + 1,
+							this->position.y / 16))) {
+		this->position.x += velocity
+				* this->playerClock.getElapsedTime().asSeconds();
+		direction = right;
+	}
+}
+
+void Player::died(Map *map) {
+	if (!map->dealsDamage(
+			sf::Vector2i(this->position.x / 16, this->position.y / 16))) {
 		this->die();
 	}
+}
+void Player::move(Map *map) {
+
+	// Colisão da cabeça pra pulo
+	if (map->doesCollide(
+			sf::Vector2i(this->position.x / 16, this->position.y / 16))) {
+	}
+
+	walkRight(map);
+	walkLeft(map);
+	jump(map);
+	groundColision(map);
 
 // Mudando a posição
 	this->shape.setPosition(this->position);
 	this->playerClock.restart();
 
-// diminuindo o tempo de recarga do tiro
-	if (shootCooldown < 100) {
-		shootCooldown++;
-	}
-
 }
 
 void Player::shoot(std::vector<Bullet*> &bullets, int &id) {
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && shootCooldown >= 100) {
+	if (shootCooldown < max_ShootCooldown) {
+		shootCooldown++;
+	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)
+			&& shootCooldown >= max_ShootCooldown) {
 		Bullet *newBullet = new Bullet(position, direction, id);
 		bullets.push_back(newBullet);
 		shootCooldown = 0;
@@ -98,6 +112,12 @@ void Player::render(sf::RenderWindow *i_window) {
 
 void Player::die() {
 	this->position = sf::Vector2f(2 * 16, 3 * 16);
+}
+
+void Player::update(sf::RenderWindow *window, Map *map) {
+	move(map);
+	died(map);
+	render(window);
 }
 
 sf::Vector2f Player::getPosition() {
