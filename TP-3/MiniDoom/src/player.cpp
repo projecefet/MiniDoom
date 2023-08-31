@@ -5,11 +5,34 @@ Player::Player() {
 	this->position = sf::Vector2f(1 * 16, 1 * 16);
 
 	this->shape.setSize(sf::Vector2f(16, 16));
-	this->shape.setFillColor(sf::Color::Green);
+	this->shape.setFillColor(sf::Color::Transparent);
 	this->shape.setPosition(this->position);
+
+	walkingTextures[0].loadFromFile("characters/jao/walking_gun/0.png");
+	walkingTextures[1].loadFromFile("characters/jao/walking_gun/1.png");
+	walkingTextures[2].loadFromFile("characters/jao/walking_gun/2.png");
+	walkingTextures[3].loadFromFile("characters/jao/walking_gun/3.png");
+
+	sprite.setTexture(walkingTextures[textureIndex]);
+
 }
 
 Player::~Player() {
+
+}
+void Player::updateAnimation() {
+
+	sprite.setTexture(walkingTextures[textureIndex]);
+	cout << textureIndex << " - textureIndex" << endl;
+	currentFrame++;
+	if (currentFrame == 30) {
+		if (textureIndex < 3) {
+			textureIndex++;
+		} else {
+			textureIndex = 0;
+		}
+		currentFrame = 0;
+	}
 }
 void Player::groundColision(Map *map) {
 	if (map->doesCollide(
@@ -102,10 +125,16 @@ void Player::shoot(std::vector<Bullet*> &bullets, int &id) {
 	}
 }
 
-void Player::render(sf::RenderWindow *i_window) {
+void Player::render(sf::RenderWindow *window) {
 // A view ta de tamanho diferente da janela pro jogo ficar em um zoom, se quiser só mudar
-	i_window->draw(this->shape);
-	i_window->setView(
+	window->draw(this->shape);
+	sf::Vector2f spritePosition;
+	spritePosition = shape.getPosition();
+	spritePosition.y = spritePosition.y - 28;
+	spritePosition.x = spritePosition.x - 10;
+	sprite.setPosition(spritePosition);
+	window->draw(sprite);
+	window->setView(
 			sf::View(sf::Vector2f(this->position.x + 50, this->position.y - 25),
 					sf::Vector2f(400, 300)));
 } // 400/300
@@ -117,6 +146,7 @@ void Player::die() {
 void Player::update(sf::RenderWindow *window, Map *map) {
 	move(map);
 	died(map);
+	updateAnimation();
 	render(window);
 }
 
