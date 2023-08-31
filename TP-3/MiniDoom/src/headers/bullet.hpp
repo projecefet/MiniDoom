@@ -39,7 +39,10 @@ public:
 		else if(direction == left){
 			position.x = position.x - 1.3;
 		}
-		shape.setPosition(position);
+		sf::Vector2f spritePosition;
+		spritePosition = position;
+		spritePosition.y = spritePosition.y + 2;
+		shape.setPosition(spritePosition);
 
 		timer++;
 
