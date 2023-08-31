@@ -15,6 +15,10 @@ private:
 	int shootCooldown = 0;
 	int max_ShootCooldown = 80;
 
+	sf::Texture walkingTextures[4];
+	int textureIndex = 0;
+	int currentFrame = 0;
+
 	enum direction {
 		left, right
 	};
@@ -39,6 +43,7 @@ public:
 	void groundColision(Map *map);
 	void died(Map *map);
 	void update(sf::RenderWindow *window, Map *map);
+	void updateAnimation();
 	void render(sf::RenderWindow *i_window);
 	void die();
 
