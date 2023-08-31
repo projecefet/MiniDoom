@@ -9,6 +9,7 @@ public:
 	sf::Vector2f position;
 	sf::FloatRect hitbox;
 	sf::RectangleShape shape;
+	sf::Sprite sprite;
 };
 
 #endif
