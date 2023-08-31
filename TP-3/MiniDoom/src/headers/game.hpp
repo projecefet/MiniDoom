@@ -26,15 +26,15 @@ private:
 			enemy->render(window);
 		}
 	}
-	void deleteBullet(int i) {
-		if (bullets.at(i)->timer >= 1000
-				|| (bullets.at(i)->hitbox.intersects(enemy1->hitbox)
+	void deleteBullet(int index) {
+		if (bullets.at(index)->timer >= 1000
+				|| (bullets.at(index)->hitbox.intersects(enemy1->hitbox)
 						&& !enemy1->checkDeath())
-				|| (bullets.at(i)->hitbox.intersects(enemy2->hitbox)
+				|| (bullets.at(index)->hitbox.intersects(enemy2->hitbox)
 						&& !enemy2->checkDeath())
-				|| (bullets.at(i)->hitbox.intersects(enemy3->hitbox)
+				|| (bullets.at(index)->hitbox.intersects(enemy3->hitbox)
 						&& !enemy3->checkDeath())) {
-			bullets.erase(bullets.begin() + i);
+			bullets.erase(bullets.begin() + index);
 		}
 	}
 
@@ -62,13 +62,6 @@ public:
 
 			back.render(window, jogador.getPosition());
 
-//			jogador.move(&map);
-//			jogador.shoot(bullets, bulletId);
-//			jogador.render(window);
-
-			jogador.update(window, &map);
-			jogador.shoot(bullets, bulletId);
-
 			for (int i = 0; i < bullets.size(); i++) {
 
 				window->draw(bullets.at(i)->shape);
@@ -80,6 +73,9 @@ public:
 
 				deleteBullet(i);
 			}
+
+			jogador.update(window, &map);
+			jogador.shoot(bullets, bulletId);
 
 			drawEnemy(enemy1, map, jogador, window);
 			drawEnemy(enemy2, map, jogador, window);
