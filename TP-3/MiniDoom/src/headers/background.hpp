@@ -1,3 +1,6 @@
+#ifndef SRC_HEADERS_BACKGROUND_HPP_
+#define SRC_HEADERS_BACKGOURND_HPP_
+
 #include <string>
 using std::string;
 
@@ -16,3 +19,5 @@ class Background {
 
   void render(sf::RenderWindow *i_window, sf::Vector2f playerPos);
 };
+
+#endif
