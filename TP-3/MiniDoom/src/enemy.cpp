@@ -1,11 +1,11 @@
 #include "headers/enemy.hpp"
 
 Enemy::Enemy(int enemyId) {
-
+	this->enemyId = enemyId;
 	switch (enemyId) {
 
 	case 1:
-		this->position = sf::Vector2f(1 * 256, 1 * 80);
+		this->position = sf::Vector2f(1 * 200, 1 * 144);
 		this->shape.setSize(sf::Vector2f(16, 16));
 		this->shape.setFillColor(sf::Color::Blue);
 		this->shape.setPosition(this->position);
@@ -13,7 +13,7 @@ Enemy::Enemy(int enemyId) {
 		break;
 
 	case 2:
-		this->position = sf::Vector2f(1 * 384, 1 * 80);
+		this->position = sf::Vector2f(1 * 290, 1 * 144);
 		this->shape.setSize(sf::Vector2f(16, 16));
 		this->shape.setFillColor(sf::Color::Magenta);
 		this->shape.setPosition(this->position);
@@ -21,9 +21,9 @@ Enemy::Enemy(int enemyId) {
 		break;
 
 	case 3:
-		this->position = sf::Vector2f(1 * 500, 1 * 64);
+		this->position = sf::Vector2f(1 * 470, 1 * 130);
 		this->shape.setSize(sf::Vector2f(16, 16));
-		this->shape.setFillColor(sf::Color::Yellow);
+		this->shape.setFillColor(sf::Color::White);
 		this->shape.setPosition(this->position);
 		this->hitbox = shape.getGlobalBounds();
 		break;
