@@ -1,40 +1,26 @@
 #include "headers/enemy.hpp"
 
-Enemy::Enemy(int enemyId) {
-	this->enemyId = enemyId;
-	switch (enemyId) {
-
-	case 1:
+Saint::Saint() { //construtor do boss final
 		this->position = sf::Vector2f(1 * 200, 1 * 144);
+		this->shape.setSize(sf::Vector2f(16, 16));
+		this->shape.setFillColor(sf::Color::Red);
+		this->shape.setPosition(this->position);
+		this->hitbox = shape.getGlobalBounds();
+}
+
+Snake::Snake(int posx, int posy){ //inimigo estatico
+		this->position = sf::Vector2f(1 * posx, 1 * posy);
+
 		this->shape.setSize(sf::Vector2f(16, 16));
 		this->shape.setFillColor(sf::Color::Blue);
 		this->shape.setPosition(this->position);
 		this->hitbox = shape.getGlobalBounds();
-		break;
-
-	case 2:
-		this->position = sf::Vector2f(1 * 290, 1 * 144);
-		this->shape.setSize(sf::Vector2f(16, 16));
-		this->shape.setFillColor(sf::Color::Magenta);
-		this->shape.setPosition(this->position);
-		this->hitbox = shape.getGlobalBounds();
-		break;
-
-	case 3:
-		this->position = sf::Vector2f(1 * 470, 1 * 130);
-		this->shape.setSize(sf::Vector2f(16, 16));
-		this->shape.setFillColor(sf::Color::White);
-		this->shape.setPosition(this->position);
-		this->hitbox = shape.getGlobalBounds();
-		break;
-
-	}
 }
 
-Enemy::~Enemy() {
+Snake::~Snake(){
 }
 
-void Enemy::update(Map *map, Player *jogador) {
+void Saint::update(Map *map, Player *jogador) {
 	if ((position.x - jogador->position.x <= 140 || distanceAllowed == true)) { //primeiro bloco
 		distanceAllowed = true;
 		//a diferença entre a posicao do jogador e do inimigo != 0
@@ -51,8 +37,8 @@ void Enemy::update(Map *map, Player *jogador) {
 		hitbox = shape.getGlobalBounds();
 
 	}
-
 }
+
 
 bool Enemy::gotShot(Bullet *&bullet) {
 
@@ -82,3 +68,5 @@ bool Enemy::checkDeath() {
 void Enemy::render(sf::RenderWindow *window) {
 	window->draw(this->shape);
 }
+
+
