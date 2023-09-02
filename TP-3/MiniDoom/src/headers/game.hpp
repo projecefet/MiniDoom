@@ -5,6 +5,7 @@
 
 #include "map.hpp"
 
+
 class Game {
 private:
 	Map map;
@@ -12,31 +13,40 @@ private:
 	sf::RenderWindow *window;
 
 	Player jogador;
-	Enemy *enemy1 = new Enemy(1);
-	Enemy *enemy2 = new Enemy(2);
-	Enemy *enemy3 = new Enemy(3);
+	Saint *saint = new Saint;
+	Snake *snake = new Snake(290, 144);
+
+	vector <Snake> cobras = {
+			Snake(290, 144), Snake (100, 144), Snake (471, 128), Snake (856, 255), Snake(1243, 272),
+			Snake (2432, 128), Snake (2815, 257), Snake (3025, 257)
+	};
+
 
 	int bulletId = 0;
 	std::vector<Bullet*> bullets;
 
-	void drawEnemy(Enemy *enemy, Map &map, Player &player,
+	void drawSaint(Saint *saint, Map &map, Player &player,
 			sf::RenderWindow *window) {
-		if (enemy->checkDeath() == false) {
-			enemy->update(&map, &player);
-			enemy->render(window);
+		if (saint->checkDeath() == false) {
+			saint->update(&map, &player);
+			saint->render(window);
+		}
+	}
+	void drawSnake(Snake *snake, Map &map, Player &player,
+			sf::RenderWindow *window) {
+		if (snake->checkDeath() == false) {
+			snake->render(window);
 		}
 	}
 	void deleteBullet(int index) {
-		if (bullets.at(index)->timer >= 1000
-				|| (bullets.at(index)->hitbox.intersects(enemy1->hitbox)
-						&& !enemy1->checkDeath())
-				|| (bullets.at(index)->hitbox.intersects(enemy2->hitbox)
-						&& !enemy2->checkDeath())
-				|| (bullets.at(index)->hitbox.intersects(enemy3->hitbox)
-						&& !enemy3->checkDeath())) {
+		if (bullets.at(index)->timer >= 1000 || (bullets.at(index)->hitbox.intersects(saint->hitbox) && !saint->checkDeath())
+				|| (bullets.at(index)->hitbox.intersects(snake->hitbox) && !snake->checkDeath())) {
 			bullets.erase(bullets.begin() + index);
 		}
+
+
 	}
+
 
 public:
 
@@ -68,9 +78,8 @@ public:
 				window->draw(bullets.at(i)->shape);
 				bullets.at(i)->update();
 
-				enemy1->gotShot(bullets.at(i));
-				enemy2->gotShot(bullets.at(i));
-				enemy3->gotShot(bullets.at(i));
+				saint->gotShot(bullets.at(i));
+				snake->gotShot(bullets.at(i));
 
 				deleteBullet(i);
 			}
@@ -78,9 +87,12 @@ public:
 			jogador.update(window, &map);
 			jogador.shoot(bullets, bulletId);
 
-			drawEnemy(enemy1, map, jogador, window);
-			drawEnemy(enemy2, map, jogador, window);
-			drawEnemy(enemy3, map, jogador, window);
+			drawSaint(saint, map, jogador, window);
+			for (int i = 0; i < cobras.size(); i++){
+				window->draw(cobras.at(i).shape);
+			}
+
+
 
 			map.render(window);
 			window->display();
