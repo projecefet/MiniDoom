@@ -15,33 +15,63 @@
 using std::cout;
 using std::endl;
 
-
 class Enemy: public Movable {
 private:
 	std::vector<int> idBulletsHit;
 public:
-    Enemy(){};
-    ~Enemy(){};
+	Enemy() {
+	}
+	;
+	~Enemy() {
+	}
+	;
+
+	int textureIndex = 0;
+	int currentFrame = 0;
 
 	bool gotShot(Bullet *&bullet);
-    void render(sf::RenderWindow *i_window);
-    bool checkDeath();
+	void render(sf::RenderWindow *i_window);
+	bool checkDeath();
 
-    sf::Vector2f newPosition;
+	sf::Vector2f newPosition;
 };
 
-class Snake: public Enemy{ //inimigo estatico
+class Snake: public Enemy { //inimigo estatico
 public:
-	Snake (int posx, int posy);
+	Snake(int posx, int posy);
 	~Snake();
+	void updateAnimation();
+
+private:
+	sf::Texture animationTextures[12];
 };
 
-class Saint: public Enemy{ //inimigo do jogo que irá seguir o player
+class Saint: public Enemy { //inimigo do jogo que irá seguir o player
 public:
 	bool distanceAllowed = false;
 	float followspeed = 0.1f;
 
-	void update(Map *map, Player * jogador);
+	sf::Texture animationTexturesRight[4];
+	sf::Texture animationTexturesLeft[4];
+
+	sf::Sprite saintSprite;
+
+	std::vector<Bullet> bullets;
+	int shootCooldown = 0;
+	int max_ShootCooldown = 100;
+	int burstCooldown = 0;
+	int max_BurstCooldown = 150;
+	int shotsPerBurst = 3;
+	bool canShoot = false;
+
+	enum direction {
+		left, right
+	};
+	int direction = left;
+
+	void update(Map *map, Player *jogador);
+	void updateAnimation();
+	void shoot(int &id, sf::Sound &sound);
 	Saint();
 	~Saint();
 };
