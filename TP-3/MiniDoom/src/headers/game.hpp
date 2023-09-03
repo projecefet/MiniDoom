@@ -15,8 +15,8 @@ private:
 	Player jogador;
 	Saint *saint = new Saint;
 	vector<Snake> cobras = { Snake(290, 144), Snake(100, 144), Snake(471, 128),
-			Snake(856, 255), Snake(1243, 272), Snake(2432, 128), Snake(2815,
-					257), Snake(3025, 257) };
+			Snake(856, 255), Snake(1243, 272), Snake(2432, 128), Snake(2815, 257), 
+			Snake(3025, 257), Snake (139, 320), Snake (319, 321), Snake (628, 368) };
 
 	int saintBulletId = 0;
 	int bulletId = 0;
@@ -140,7 +140,7 @@ public:
 				}
 			}
 
-			int enemiesLeft = 9;
+			int enemiesLeft = 12;
 
 			window->clear();
 
