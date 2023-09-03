@@ -49,7 +49,7 @@ private:
 class Saint: public Enemy { //inimigo do jogo que irá seguir o player
 public:
 	bool distanceAllowed = false;
-	float followspeed = 0.1f;
+	float followspeed = 0.2f;
 
 	sf::Texture animationTexturesRight[4];
 	sf::Texture animationTexturesLeft[4];
