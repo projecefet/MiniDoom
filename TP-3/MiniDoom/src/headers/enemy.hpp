@@ -5,17 +5,17 @@
 
 #include <vector>
 #include "map.hpp"
-#include "movable.hpp"
 #include "player.hpp"
 #include "bullet.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
+#include "entity.hpp"
 
 using std::cout;
 using std::endl;
 
-class Enemy: public Movable {
+class Enemy: public Entity {
 private:
 	std::vector<int> idBulletsHit;
 public:
