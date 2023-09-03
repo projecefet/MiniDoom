@@ -71,7 +71,7 @@ Snake::~Snake() {
 }
 
 Saint::Saint() { //construtor do boss final
-	this->position = sf::Vector2f(1 * 200, 1 * 144);
+	this->position = sf::Vector2f(1 * 5848, 1 * 256);
 	this->shape.setSize(sf::Vector2f(16, 16));
 	this->shape.setFillColor(sf::Color::Transparent);
 	this->shape.setPosition(this->position);
