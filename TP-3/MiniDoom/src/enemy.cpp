@@ -1,6 +1,6 @@
 #include "headers/enemy.hpp"
 bool Enemy::gotShot(Bullet *&bullet) {
-
+	
 	int auxiliaryIncrement = 0;
 	if (bullet->hitbox.intersects(hitbox)) {
 
