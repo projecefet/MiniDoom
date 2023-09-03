@@ -20,7 +20,7 @@ public:
 	Bullet(sf::Vector2f startPosition, const int direction, int &id) {
 		position = startPosition;
 		shape.setSize(sf::Vector2f(10, 2));
-		shape.setFillColor(sf::Color::Red);
+		shape.setFillColor(sf::Color::Black);
 		shape.setPosition(position);
 		this->id = id;
 		id++;
@@ -34,10 +34,10 @@ public:
 
 	void update() {
 		if(direction == right){
-			position.x = position.x + 4;
+			position.x = position.x + 1.3;
 		}
 		else if(direction == left){
-			position.x = position.x - 4;
+			position.x = position.x - 1.3;
 		}
 		sf::Vector2f spritePosition;
 		spritePosition = position;
