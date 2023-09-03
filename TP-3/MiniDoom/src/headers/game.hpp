@@ -5,6 +5,7 @@
 #include <SFML/audio.hpp>
 
 #include "map.hpp"
+#include "player.hpp"
 
 class Game {
 private:
@@ -15,7 +16,7 @@ private:
 	Player jogador;
 	Saint *saint = new Saint;
 	vector<Snake> cobras = { Snake(290, 144), Snake(100, 144), Snake(471, 128),
-			Snake(856, 255), Snake(1243, 272), Snake(2432, 128), Snake(2815, 257), 
+			Snake(856, 255), Snake(1243, 272), Snake(2432, 128), Snake(2815, 257),
 			Snake(3025, 257), Snake (139, 320), Snake (319, 321), Snake (628, 368) };
 
 	int saintBulletId = 0;
@@ -27,6 +28,78 @@ private:
 
 	sf::Font font;
 	sf::Text enemiesLeftText;
+
+	void lose(){
+		sf::Texture imagem;
+		sf::Sprite fundo;
+		sf::Vector2f newPos;
+		sf::Vector2i leituramouse;
+		sf::Vector2f cordenadatual;
+
+		imagem.loadFromFile("resources/screens/loses.png");
+		fundo.setTexture(imagem);
+
+
+		newPos.x = jogador.getPosition().x - 155;
+		newPos.y = jogador.getPosition().y - 180;
+		fundo.setScale(0.51, 0.51);
+		fundo.setPosition(newPos.x, newPos.y);
+
+		sf::RectangleShape mouseplay(sf::Vector2f(120, 50));
+		mouseplay.setPosition(newPos.x + 155, newPos.y + 226);
+		mouseplay.setFillColor(sf::Color::Transparent);
+
+
+		leituramouse = sf::Mouse::getPosition(*window);
+		cordenadatual = window->mapPixelToCoords(leituramouse);
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (mouseplay.getGlobalBounds().contains(cordenadatual)) {
+				window->close();
+			}
+		}
+
+		window->draw(fundo);
+		window->draw(mouseplay);
+		window->display();
+	}
+
+	void wins(){
+
+		sf::Texture imagem;
+		sf::Sprite fundo;
+		sf::Vector2f newPos;
+		sf::Vector2i leituramouse;
+		sf::Vector2f cordenadatual;
+
+		imagem.loadFromFile("resources/screens/wins.png");
+		fundo.setTexture(imagem);
+
+
+		newPos.x = jogador.getPosition().x - 155;
+		newPos.y = jogador.getPosition().y - 180;
+		fundo.setScale(0.51, 0.51);
+		fundo.setPosition(newPos.x, newPos.y);
+
+		sf::RectangleShape mouseplay(sf::Vector2f(120, 50));
+		mouseplay.setPosition(newPos.x + 155, newPos.y + 226);
+		mouseplay.setFillColor(sf::Color::Transparent);
+
+
+		leituramouse = sf::Mouse::getPosition(*window);
+		cordenadatual = window->mapPixelToCoords(leituramouse);
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (mouseplay.getGlobalBounds().contains(cordenadatual)) {
+				window->close();
+			}
+		}
+
+
+		window->draw(fundo);
+		window->draw(mouseplay);
+		window->display();
+	}
 
 	void drawLifes() {
 		sf::Vector2f newPositionHeart1;
@@ -109,7 +182,81 @@ private:
 		}
 	}
 
+	void level(){
+		int enemiesLeft = 12;
+
+		window->clear();
+
+		//background
+		back.render(window, jogador.getPosition());
+
+		//balas e suas relações com os inimigos
+		for (int i = 0; i < bullets.size(); i++) {
+
+			window->draw(bullets.at(i)->shape);
+			bullets.at(i)->update();
+
+			saint->gotShot(bullets.at(i));
+			for (int j = 0; j < cobras.size(); j++) {
+				cobras.at(j).gotShot(bullets.at(i));
+			}
+		}
+
+		deleteBullets();
+
+		//mapa
+		map.render(window);
+		//Coisas do saint
+		drawSaint(saint, map, jogador, window);
+		if (saint->checkDeath() == false) {
+			saint->shoot(saintBulletId, ShotSound);
+		} else {
+			enemiesLeft--;
+		}
+
+		for (int i = 0; i < saint->bullets.size(); i++) {
+			window->draw(saint->bullets.at(i).shape);
+			saint->bullets.at(i).update();
+		}
+
+		//Coisas das snakes
+
+		for (int i = 0; i < cobras.size(); i++) {
+			drawSnake(&cobras.at(i), map, jogador, window);
+			if (cobras.at(i).checkDeath() == true) {
+				enemiesLeft--;
+			}
+		}
+
+		//coisas do player
+		jogador.update(window, &map);
+		jogador.shoot(bullets, bulletId, ShotSound);
+		doDamageToPlayer();
+		//coisas das vidas
+		drawLifes();
+
+		//texto
+		enemiesLeftText.setPosition(jogador.shape.getPosition().x + 50,
+				jogador.shape.getPosition().y - 170);
+		enemiesLeftText.setString(
+				"Coisa pa mata ainda: " + std::to_string(enemiesLeft));
+		window->draw(enemiesLeftText);
+
+		if (enemiesLeft == 0){
+			janelaControle = 1;
+		}
+
+		if(jogador.lifes == 0){
+			janelaControle = 2;
+		}
+
+		window->display();
+
+	}
+
 public:
+	int janelaControle = 0;
+
 
 	Game() :
 			map("mapa.png", "info.xml"), back("resources/background.jpg",
@@ -139,71 +286,21 @@ public:
 					window->close();
 				}
 			}
+			switch (janelaControle){
+			case 0:
+				level();
+			break;
 
-			int enemiesLeft = 12;
+			case 1:
+				wins();
+			break;
 
-			window->clear();
-
-			//background
-			back.render(window, jogador.getPosition());
-
-			//balas e suas relações com os inimigos
-			for (int i = 0; i < bullets.size(); i++) {
-
-				window->draw(bullets.at(i)->shape);
-				bullets.at(i)->update();
-
-				saint->gotShot(bullets.at(i));
-				for (int j = 0; j < cobras.size(); j++) {
-					cobras.at(j).gotShot(bullets.at(i));
-				}
+			case 2:
+				lose();
+			break;
 			}
-
-			deleteBullets();
-
-			//mapa
-			map.render(window);
-			//Coisas do saint
-			drawSaint(saint, map, jogador, window);
-			if (saint->checkDeath() == false) {
-				saint->shoot(saintBulletId, ShotSound);
-			} else {
-				enemiesLeft--;
-			}
-
-			for (int i = 0; i < saint->bullets.size(); i++) {
-				window->draw(saint->bullets.at(i).shape);
-				saint->bullets.at(i).update();
-			}
-
-			//Coisas das snakes
-
-			for (int i = 0; i < cobras.size(); i++) {
-				drawSnake(&cobras.at(i), map, jogador, window);
-				if (cobras.at(i).checkDeath() == true) {
-					enemiesLeft--;
-				}
-			}
-
-			//coisas do player
-			jogador.update(window, &map);
-			jogador.shoot(bullets, bulletId, ShotSound);
-			doDamageToPlayer();
-			//coisas das vidas
-			drawLifes();
-
-			//texto
-			cout << enemiesLeft << endl;
-			enemiesLeftText.setPosition(jogador.shape.getPosition().x + 50,
-					jogador.shape.getPosition().y - 170);
-			enemiesLeftText.setString(
-					"Coisa pa mata ainda: " + std::to_string(enemiesLeft));
-			window->draw(enemiesLeftText);
-
-			window->display();
 		}
 	}
-
 };
 
 #endif
