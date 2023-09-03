@@ -13,7 +13,7 @@ Background::~Background() {}
 void Background::render(sf::RenderWindow *i_window, sf::Vector2f playerPos) {
   // 2 é a velocidade do parallax, se mudar ela a velocidade fica mais rapida ou devagar
   this->background.setPosition(
-      sf::Vector2f(this->startPos.x + playerPos.x / 2, this->startPos.y + playerPos.y / 2));
+      sf::Vector2f(this->startPos.x + playerPos.x / 1.1, this->startPos.y + playerPos.y / 1.1));
   i_window->draw(this->background);
 
  }
