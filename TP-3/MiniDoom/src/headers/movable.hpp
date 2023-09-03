@@ -1,10 +1,10 @@
 
-#ifndef SRC_HEADERS_MOVABLE_HPP_
-#define SRC_HEADERS_MOVABLE_HPP_
+#ifndef SRC_HEADERS_ENTITY_HPP_
+#define SRC_HEADERS_ENTITY_HPP_
 
 #include "map.hpp"
 
-class Movable{
+class Entity{
 public:
 	sf::Vector2f position;
 	sf::FloatRect hitbox;
