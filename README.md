@@ -29,4 +29,4 @@ compatível, para que assim o código funcione corretamente. No caso, é preciso
 
 
 
-Após seguir esses passos, o PC estará apto a acessar o jogo e desfrutar da experiência de "ONE PIECE: Batalha Naval".
+Após seguir esses passos, o PC estará apto a acessar o jogo e desfrutar da experiência de "Jão do Sertão".
