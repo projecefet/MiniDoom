@@ -14,7 +14,7 @@ Está sendo desenvolvendo por:
 - [Maria Eduarda Pereira](https://github.com/wisthg)
 - [Otto Abreu](https://github.com/Otto-abreu)
 - [Vinicius Candido](https://github.com/ViniciusCandido0)
-- 
+  
 ---
 
 ### Como executar o jogo "Jão do Sertão" 
